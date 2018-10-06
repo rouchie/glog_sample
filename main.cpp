@@ -1,11 +1,11 @@
-#include "glog_sample.h"
+#include "glog.h"
 
 using namespace std;
 
 int main(int argc, char **argv)
 {
 
-	CGLOG glog(argv[0], "./");
+	CGLOG::INIT_GLOG(argv[0], "./");
 
 	DLOG(INFO) << "begin.";
 
