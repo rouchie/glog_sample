@@ -6,8 +6,73 @@
 
 typedef void (*pfnSigHandle)(const char *pData, int iSize);
 
+typedef enum glog_flag_en {
+	GLOG_SET_EN = 0,
+	GLOG_GET_EN,
+}GLOG_FLAG_EN;
+
+class CGLOG;
+
 class CGLOG {
+	private:
+		static CGLOG * glogInstance(GLOG_FLAG_EN flag, CGLOG *p) {
+			static CGLOG * pcGlog = NULL;
+
+			if (flag == GLOG_SET_EN)
+				pcGlog = p;
+
+			return pcGlog;
+		}
+
 	public:
+		static void INIT_GLOG(const char *arg) {
+			CGLOG * pcGlog = CGLOG::glogInstance(GLOG_GET_EN, NULL);
+			if (NULL != pcGlog) {
+				return ;
+			}
+
+			pcGlog = new CGLOG(arg);
+			CGLOG::glogInstance(GLOG_SET_EN, pcGlog);
+		}
+		static void INIT_GLOG(const char *arg, const char *log_dir) {
+			CGLOG * pcGlog = CGLOG::glogInstance(GLOG_GET_EN, NULL);
+			if (NULL != pcGlog) {
+				return ;
+			}
+
+			pcGlog = new CGLOG(arg, log_dir);
+			CGLOG::glogInstance(GLOG_SET_EN, pcGlog);
+		}
+		static void INIT_GLOG(const char *arg, const char *log_dir, pfnSigHandle pfn) {
+			CGLOG * pcGlog = CGLOG::glogInstance(GLOG_GET_EN, NULL);
+			if (NULL != pcGlog) {
+				return ;
+			}
+
+			pcGlog = new CGLOG(arg, log_dir, pfn);
+			CGLOG::glogInstance(GLOG_SET_EN, pcGlog);
+		}
+		static void INIT_GLOG(const char *arg, pfnSigHandle pfn) {
+			CGLOG * pcGlog = CGLOG::glogInstance(GLOG_GET_EN, NULL);
+			if (NULL != pcGlog) {
+				return ;
+			}
+
+			pcGlog = new CGLOG(arg, pfn);
+			CGLOG::glogInstance(GLOG_SET_EN, pcGlog);
+		}
+
+		static void EXIT_GLOG() {
+			CGLOG * pcGlog = CGLOG::glogInstance(GLOG_GET_EN, NULL);
+			if (NULL == pcGlog) {
+				return ;
+			}
+
+			delete pcGlog;
+			CGLOG::glogInstance(GLOG_SET_EN, NULL);
+		}
+
+	private:
 	CGLOG(const char *arg) {
 		PCHECK(arg != NULL);
 
