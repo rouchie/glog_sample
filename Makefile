@@ -15,5 +15,5 @@ $(TARGET):$(objs)
 	g++ -c $< $(CCFLAGS) 
 
 clean:
-	rm *.o $(TARGET)
+	rm -f *.o $(TARGET)
 
